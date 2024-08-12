@@ -2,25 +2,45 @@ import { scaleFactor } from "./constants";
 import k from "./kaplayContext";
 import { drawCollisions, drawInteractions, setCamScale } from "./utils";
 
+let characterSpriteIndex = 7;
+const characterSpriteBase = 936;
+
+const spriteToUse = characterSpriteBase + 4 * characterSpriteIndex;
+
 k.loadSprite("spritesheet", "./spritesheet.png", {
   sliceX: 39,
   sliceY: 31,
   anims: {
-    "idle-down": 964,
-    "walk-down": { from: 964, to: 967, loop: true, speed: 8 },
-    "idle-side": 1003,
-    "walk-side": { from: 1003, to: 1006, loop: true, speed: 8 },
-    "idle-up": 1042,
-    "walk-up": { from: 1042, to: 1045, loop: true, speed: 8 },
+    "idle-down": spriteToUse,
+    "walk-down": {
+      from: spriteToUse,
+      to: spriteToUse + 3,
+      loop: true,
+      speed: 8,
+    },
+    "idle-side": spriteToUse + 39,
+    "walk-side": {
+      from: spriteToUse + 39,
+      to: spriteToUse + 42,
+      loop: true,
+      speed: 8,
+    },
+    "idle-up": spriteToUse + 78,
+    "walk-up": {
+      from: spriteToUse + 78,
+      to: spriteToUse + 81,
+      loop: true,
+      speed: 8,
+    },
     "attack-down": 1120,
     "attack-side": 1121,
     "attack-up": 1122,
-    "slime-idle-down": 858,
-    "slime-idle-side": 860,
-    "slime-idle-up": 897,
-    "slime-move-down": { from: 858, to: 859, loop: true, speed: 4 },
-    "slime-move-side": { from: 860, to: 861, loop: true, speed: 4 },
-    "slime-move-up": { from: 897, to: 898, loop: true, speed: 4 },
+    // "slime-idle-down": 858,
+    // "slime-idle-side": 860,
+    // "slime-idle-up": 897,
+    // "slime-move-down": { from: 858, to: 859, loop: true, speed: 4 },
+    // "slime-move-side": { from: 860, to: 861, loop: true, speed: 4 },
+    // "slime-move-up": { from: 897, to: 898, loop: true, speed: 4 },
   },
 });
 
@@ -45,7 +65,7 @@ k.scene("main", async () => {
     k.pos(),
     k.scale(scaleFactor),
     {
-      speed: 250,
+      speed: 300,
       direction: "down",
       isInDialogue: false,
       attacking: false,
@@ -75,20 +95,60 @@ k.scene("main", async () => {
     }
   }
 
-  console.log(k.center());
-
-  // const box = k.make([
-  //   k.rect(300, 400),
-  //   k.color(255, 255, 255),
-  //   k.outline(4),
+  // const wardrobeMenu = k.make([
+  //   k.rect(240, 380),
+  //   k.outline(2),
+  //   k.Color.WHITE,
+  //   k.pos(k.camPos().x - scaleFactor * 50, k.camPos().y),
   //   k.anchor("center"),
-  //   k.pos(k.center()),
   // ]);
 
-  // k.add(box);
+  // wardrobeMenu.add([
+  //   k.sprite("spritesheet", { anim: "idle-down" }),
+  //   k.scale(scaleFactor * 3),
+  //   k.pos(0, -30),
+  //   k.anchor("center"),
+  // ]);
 
+  // wardrobeMenu.add([
+  //   k.text(">", {
+  //     size: 12 * scaleFactor,
+  //     transform: { color: k.Color.BLACK },
+  //   }),
+  //   k.pos(20, 100),
+  //   k.area({
+  //     shape: new k.Rect(k.vec2(0), 30, 30),
+  //   }),
+  //   k.anchor("center"),
+  //   "rightArrow",
+  // ]);
+
+  // wardrobeMenu.add([
+  //   k.text("<", {
+  //     size: 12 * scaleFactor,
+  //     transform: { color: k.Color.BLACK },
+  //   }),
+  //   k.pos(-20, 100),
+  //   k.anchor("center"),
+  //   "leftArrow",
+  // ]);
+
+  // wardrobeMenu.add([
+  //   k.text("x", {
+  //     size: scaleFactor * 8,
+  //     transform: { color: k.Color.BLACK },
+  //   }),
+  //   k.anchor("center"),
+  //   k.pos(100, -170),
+  //   "closeButton",
+  // ]);
+
+  // k.add(wardrobeMenu);
+
+  // k.onClick("rightArrow", () => {
+  //   characterSpriteIndex += 1;
+  // });
   setCamScale(k);
-
   k.onResize(() => {
     setCamScale(k);
   });

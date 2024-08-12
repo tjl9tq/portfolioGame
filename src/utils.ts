@@ -75,6 +75,8 @@ export const drawInteractions = (
   player: GameObj,
 ) => {
   for (const interaction of layer.objects) {
+    // TODO: Remove when wardrobe is implemented
+    if (interaction.name === "wardrobe") continue;
     if (interaction.name) {
       const xPos = interaction.x * scaleFactor;
       const yPos = interaction.y * scaleFactor;
@@ -136,23 +138,18 @@ export const drawInteractions = (
         ],
         { duration: 3 },
       );
-
-      // const box = k.make([
-      //   k.rect(300, 400),
-      //   k.color(255, 255, 255),
-      //   k.outline(4),
-      //   k.anchor("center"),
-      //   k.pos(k.center()),
-      // ]);
       k.add(label);
       k.add(text);
       k.add(arrow);
       player.onCollide(interaction.name, () => {
         player.isInDialogue = true;
-        displayDialogue(
-          dialogueData[interaction.name] ?? "default",
-          () => (player.isInDialogue = false),
-        );
+        if (interaction.name === "wardrobe") {
+        } else {
+          displayDialogue(
+            dialogueData[interaction.name] ?? "default",
+            () => (player.isInDialogue = false),
+          );
+        }
       });
     }
   }
