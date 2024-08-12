@@ -1,4 +1,4 @@
-import { dialogueData, scaleFactor } from "./constants";
+import { scaleFactor } from "./constants";
 import k from "./kaplayContext";
 import { drawCollisions, drawInteractions, setCamScale } from "./utils";
 
