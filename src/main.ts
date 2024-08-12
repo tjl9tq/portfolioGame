@@ -59,11 +59,6 @@ k.scene("main", async () => {
     if (layer.name === "objectCollision") {
       drawCollisions(map, layer);
     }
-
-    if (layer.name === "interactions") {
-      drawInteractions(map, layer, player);
-    }
-
     if (layer.name === "spawnpoint") {
       for (const entity of layer.objects) {
         if (entity.name === "player") {
@@ -75,7 +70,22 @@ k.scene("main", async () => {
         }
       }
     }
+    if (layer.name === "interactions") {
+      drawInteractions(map, layer, player);
+    }
   }
+
+  console.log(k.center());
+
+  // const box = k.make([
+  //   k.rect(300, 400),
+  //   k.color(255, 255, 255),
+  //   k.outline(4),
+  //   k.anchor("center"),
+  //   k.pos(k.center()),
+  // ]);
+
+  // k.add(box);
 
   setCamScale(k);
 
@@ -209,7 +219,6 @@ k.scene("main", async () => {
         }
       };
       const getHitboxShape = () => {
-        console.log(player.direction);
         if (player.direction === "up" || player.direction === "down")
           return new k.Rect(k.vec2(0), player.width * 3, player.height * 2);
         if (player.direction === "left" || player.direction === "right")

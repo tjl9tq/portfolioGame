@@ -1,7 +1,7 @@
 import { KAPLAYCtx, GameObj } from "kaplay";
 import k from "./kaplayContext";
 import { MapObjectLayer } from "./types";
-import { dialogueData } from "./constants";
+import { dialogueData, scaleFactor } from "./constants";
 
 export function displayDialogue(text: string, onDisplayEnd: Function) {
   const dialogueUI = document.getElementById("textbox-container");
@@ -76,6 +76,9 @@ export const drawInteractions = (
 ) => {
   for (const interaction of layer.objects) {
     if (interaction.name) {
+      const xPos = interaction.x * scaleFactor;
+      const yPos = interaction.y * scaleFactor;
+
       map.add([
         k.area({
           shape: new k.Rect(k.vec2(0), interaction.width, interaction.height),
@@ -84,23 +87,24 @@ export const drawInteractions = (
         k.pos(interaction.x, interaction.y),
         interaction.name,
       ]);
+
       const label = k.make([
-        k.rect(19, 5),
-        k.pos(interaction.x, interaction.y - 10),
-        k.outline(0.3),
+        k.rect(80, 18),
+        k.outline(2),
         k.Color.WHITE,
         k.animate(),
       ]);
+
       const text = k.make([
         k.text(interaction.name, {
-          size: 3,
+          size: 3 * scaleFactor,
           transform: { color: k.Color.BLACK },
         }),
         k.animate(),
       ]);
       const arrow = k.make([
         k.text(">", {
-          size: 7,
+          size: 7 * scaleFactor,
           transform: { color: k.Color.BLACK, angle: 90 },
         }),
         k.animate(),
@@ -108,34 +112,41 @@ export const drawInteractions = (
       label.animate(
         "pos",
         [
-          k.vec2(interaction.x - 1, interaction.y - 8),
-          k.vec2(interaction.x - 1, interaction.y - 12),
-          k.vec2(interaction.x - 1, interaction.y - 8),
+          k.vec2(xPos - 10, yPos - 35),
+          k.vec2(xPos - 10, yPos - 50),
+          k.vec2(xPos - 10, yPos - 35),
         ],
         { duration: 3 },
       ),
         text.animate(
           "pos",
           [
-            k.vec2(interaction.x, interaction.y - 7),
-            k.vec2(interaction.x, interaction.y - 11),
-            k.vec2(interaction.x, interaction.y - 7),
+            k.vec2(xPos - 5, yPos - 32),
+            k.vec2(xPos - 5, yPos - 47),
+            k.vec2(xPos - 5, yPos - 32),
           ],
           { duration: 3 },
         );
       arrow.animate(
         "pos",
         [
-          k.vec2(interaction.x + 6, interaction.y - 4),
-          k.vec2(interaction.x + 6, interaction.y - 8),
-          k.vec2(interaction.x + 6, interaction.y - 4),
+          k.vec2(xPos + 22, yPos - 20),
+          k.vec2(xPos + 22, yPos - 35),
+          k.vec2(xPos + 22, yPos - 20),
         ],
         { duration: 3 },
       );
 
-      map.add(label);
-      map.add(text);
-      map.add(arrow);
+      // const box = k.make([
+      //   k.rect(300, 400),
+      //   k.color(255, 255, 255),
+      //   k.outline(4),
+      //   k.anchor("center"),
+      //   k.pos(k.center()),
+      // ]);
+      k.add(label);
+      k.add(text);
+      k.add(arrow);
       player.onCollide(interaction.name, () => {
         player.isInDialogue = true;
         displayDialogue(
