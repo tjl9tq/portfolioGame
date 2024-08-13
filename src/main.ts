@@ -1,48 +1,18 @@
 import { scaleFactor } from "./constants";
 import k from "./kaplayContext";
-import { drawCollisions, drawInteractions, setCamScale } from "./utils";
+import {
+  drawCollisions,
+  drawInteractions,
+  loadSpriteSheet,
+  setCamScale,
+} from "./utils";
 
 let characterSpriteIndex = 7;
 const characterSpriteBase = 936;
 
-const spriteToUse = characterSpriteBase + 4 * characterSpriteIndex;
+let spriteToUse = characterSpriteBase + 4 * characterSpriteIndex;
 
-k.loadSprite("spritesheet", "./spritesheet.png", {
-  sliceX: 39,
-  sliceY: 31,
-  anims: {
-    "idle-down": spriteToUse,
-    "walk-down": {
-      from: spriteToUse,
-      to: spriteToUse + 3,
-      loop: true,
-      speed: 8,
-    },
-    "idle-side": spriteToUse + 39,
-    "walk-side": {
-      from: spriteToUse + 39,
-      to: spriteToUse + 42,
-      loop: true,
-      speed: 8,
-    },
-    "idle-up": spriteToUse + 78,
-    "walk-up": {
-      from: spriteToUse + 78,
-      to: spriteToUse + 81,
-      loop: true,
-      speed: 8,
-    },
-    "attack-down": 1120,
-    "attack-side": 1121,
-    "attack-up": 1122,
-    // "slime-idle-down": 858,
-    // "slime-idle-side": 860,
-    // "slime-idle-up": 897,
-    // "slime-move-down": { from: 858, to: 859, loop: true, speed: 4 },
-    // "slime-move-side": { from: 860, to: 861, loop: true, speed: 4 },
-    // "slime-move-up": { from: 897, to: 898, loop: true, speed: 4 },
-  },
-});
+loadSpriteSheet(spriteToUse);
 
 k.loadSprite("map", "./map.png");
 
@@ -75,6 +45,62 @@ k.scene("main", async () => {
     "player",
   ]);
 
+  const wardrobeMenu = k.make([
+    k.rect(240, 380),
+    k.outline(2),
+    k.Color.WHITE,
+    k.pos(k.camPos().x - scaleFactor * 50, k.camPos().y),
+    k.anchor("center"),
+  ]);
+
+  const menuSprite = k.make([
+    k.sprite("spritesheet", { anim: "idle-down" }),
+    k.scale(scaleFactor * 3),
+    k.pos(0, -30),
+    k.anchor("center"),
+  ]);
+
+  wardrobeMenu.add(menuSprite);
+
+  wardrobeMenu.add([
+    k.text(">", {
+      size: 12 * scaleFactor,
+      transform: { color: k.Color.BLACK },
+    }),
+    k.pos(20, 100),
+    k.area({
+      shape: new k.Rect(k.vec2(0), 30, 30),
+    }),
+    k.anchor("center"),
+    "rightArrow",
+  ]);
+
+  wardrobeMenu.add([
+    k.text("<", {
+      size: 12 * scaleFactor,
+      transform: { color: k.Color.BLACK },
+    }),
+    k.pos(-20, 100),
+    k.area({
+      shape: new k.Rect(k.vec2(0), 30, 30),
+    }),
+    k.anchor("center"),
+    "leftArrow",
+  ]);
+
+  wardrobeMenu.add([
+    k.text("x", {
+      size: scaleFactor * 8,
+      transform: { color: k.Color.BLACK },
+    }),
+    k.area({
+      shape: new k.Rect(k.vec2(0), 30, 30),
+    }),
+    k.anchor("center"),
+    k.pos(100, -170),
+    "closeButton",
+  ]);
+
   for (const layer of layers) {
     if (layer.name === "objectCollision") {
       drawCollisions(map, layer);
@@ -91,63 +117,65 @@ k.scene("main", async () => {
       }
     }
     if (layer.name === "interactions") {
-      drawInteractions(map, layer, player);
+      drawInteractions(map, layer, player, wardrobeMenu);
     }
   }
 
-  // const wardrobeMenu = k.make([
-  //   k.rect(240, 380),
-  //   k.outline(2),
-  //   k.Color.WHITE,
-  //   k.pos(k.camPos().x - scaleFactor * 50, k.camPos().y),
-  //   k.anchor("center"),
-  // ]);
+  k.add(wardrobeMenu);
 
-  // wardrobeMenu.add([
-  //   k.sprite("spritesheet", { anim: "idle-down" }),
-  //   k.scale(scaleFactor * 3),
-  //   k.pos(0, -30),
-  //   k.anchor("center"),
-  // ]);
+  wardrobeMenu.hidden = true;
 
-  // wardrobeMenu.add([
-  //   k.text(">", {
-  //     size: 12 * scaleFactor,
-  //     transform: { color: k.Color.BLACK },
-  //   }),
-  //   k.pos(20, 100),
-  //   k.area({
-  //     shape: new k.Rect(k.vec2(0), 30, 30),
-  //   }),
-  //   k.anchor("center"),
-  //   "rightArrow",
-  // ]);
+  k.onClick("rightArrow", () => {
+    if (wardrobeMenu.hidden) return;
+    if (characterSpriteIndex === 7) {
+      characterSpriteIndex = 0;
+    } else {
+      characterSpriteIndex += 1;
+    }
+    loadSpriteSheet(characterSpriteBase + 4 * characterSpriteIndex);
+    menuSprite.use(k.sprite("spritesheet", { anim: "idle-down" }));
+    let initialAnim = "idle-down";
 
-  // wardrobeMenu.add([
-  //   k.text("<", {
-  //     size: 12 * scaleFactor,
-  //     transform: { color: k.Color.BLACK },
-  //   }),
-  //   k.pos(-20, 100),
-  //   k.anchor("center"),
-  //   "leftArrow",
-  // ]);
+    if (player.direction === "right" || player.direction === "left") {
+      initialAnim = "idle-side";
+    } else if (player.direction === "up") {
+      initialAnim = "idle-up";
+    }
+    player.use(k.sprite("spritesheet", { anim: initialAnim }));
+  });
 
-  // wardrobeMenu.add([
-  //   k.text("x", {
-  //     size: scaleFactor * 8,
-  //     transform: { color: k.Color.BLACK },
-  //   }),
-  //   k.anchor("center"),
-  //   k.pos(100, -170),
-  //   "closeButton",
-  // ]);
+  k.onClick("leftArrow", () => {
+    if (wardrobeMenu.hidden) return;
+    if (characterSpriteIndex === 0) {
+      characterSpriteIndex = 7;
+    } else {
+      characterSpriteIndex -= 1;
+    }
+    loadSpriteSheet(characterSpriteBase + 4 * characterSpriteIndex);
+    menuSprite.use(k.sprite("spritesheet", { anim: "idle-down" }));
+    let initialAnim = "idle-down";
 
-  // k.add(wardrobeMenu);
+    if (player.direction === "right" || player.direction === "left") {
+      initialAnim = "idle-side";
+    } else if (player.direction === "up") {
+      initialAnim = "idle-up";
+    }
+    player.use(k.sprite("spritesheet", { anim: initialAnim }));
+  });
 
-  // k.onClick("rightArrow", () => {
-  //   characterSpriteIndex += 1;
-  // });
+  k.onClick("closeButton", () => {
+    if (wardrobeMenu.hidden) return;
+    wardrobeMenu.hidden = true;
+
+    setTimeout(() => {
+      player.isInDialogue = false;
+    }, 500);
+  });
+
+  player.onCollide("wardrobe", () => {
+    wardrobeMenu.hidden = false;
+  });
+
   setCamScale(k);
   k.onResize(() => {
     setCamScale(k);

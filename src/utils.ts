@@ -73,10 +73,10 @@ export const drawInteractions = (
   map: GameObj,
   layer: MapObjectLayer,
   player: GameObj,
+  wardrobeMenu: GameObj,
 ) => {
   for (const interaction of layer.objects) {
     // TODO: Remove when wardrobe is implemented
-    if (interaction.name === "wardrobe") continue;
     if (interaction.name) {
       const xPos = interaction.x * scaleFactor;
       const yPos = interaction.y * scaleFactor;
@@ -143,8 +143,7 @@ export const drawInteractions = (
       k.add(arrow);
       player.onCollide(interaction.name, () => {
         player.isInDialogue = true;
-        if (interaction.name === "wardrobe") {
-        } else {
+        if (interaction.name !== "wardrobe") {
           displayDialogue(
             dialogueData[interaction.name] ?? "default",
             () => (player.isInDialogue = false),
@@ -153,4 +152,43 @@ export const drawInteractions = (
       });
     }
   }
+};
+
+export const loadSpriteSheet = (spriteToUse: number) => {
+  k.loadSprite("spritesheet", "./spritesheet.png", {
+    sliceX: 39,
+    sliceY: 31,
+    anims: {
+      "idle-down": spriteToUse,
+      "walk-down": {
+        from: spriteToUse,
+        to: spriteToUse + 3,
+        loop: true,
+        speed: 8,
+      },
+      "idle-side": spriteToUse + 39,
+      "walk-side": {
+        from: spriteToUse + 39,
+        to: spriteToUse + 42,
+        loop: true,
+        speed: 8,
+      },
+      "idle-up": spriteToUse + 78,
+      "walk-up": {
+        from: spriteToUse + 78,
+        to: spriteToUse + 81,
+        loop: true,
+        speed: 8,
+      },
+      "attack-down": 1120,
+      "attack-side": 1121,
+      "attack-up": 1122,
+      // "slime-idle-down": 858,
+      // "slime-idle-side": 860,
+      // "slime-idle-up": 897,
+      // "slime-move-down": { from: 858, to: 859, loop: true, speed: 4 },
+      // "slime-move-side": { from: 860, to: 861, loop: true, speed: 4 },
+      // "slime-move-up": { from: 897, to: 898, loop: true, speed: 4 },
+    },
+  });
 };
