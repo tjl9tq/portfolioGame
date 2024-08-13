@@ -76,6 +76,7 @@ export const drawInteractions = (
 ) => {
   for (const interaction of layer.objects) {
     // TODO: Remove when wardrobe is implemented
+    if (interaction.name === "wardrobe") continue;
     if (interaction.name) {
       const xPos = interaction.x * scaleFactor;
       const yPos = interaction.y * scaleFactor;
