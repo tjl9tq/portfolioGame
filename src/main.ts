@@ -117,7 +117,7 @@ k.scene("main", async () => {
       }
     }
     if (layer.name === "interactions") {
-      drawInteractions(map, layer, player, wardrobeMenu);
+      drawInteractions(map, layer, player);
     }
   }
 
