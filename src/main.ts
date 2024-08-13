@@ -49,7 +49,7 @@ k.scene("main", async () => {
     k.rect(240, 380),
     k.outline(2),
     k.Color.WHITE,
-    k.pos(k.camPos().x - scaleFactor * 50, k.camPos().y),
+    k.pos(k.center()),
     k.anchor("center"),
   ]);
 
