@@ -73,7 +73,6 @@ export const drawInteractions = (
   map: GameObj,
   layer: MapObjectLayer,
   player: GameObj,
-  wardrobeMenu: GameObj,
 ) => {
   for (const interaction of layer.objects) {
     // TODO: Remove when wardrobe is implemented
