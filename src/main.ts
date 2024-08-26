@@ -160,11 +160,12 @@ k.scene("main", async () => {
 
     setTimeout(() => {
       player.isInDialogue = false;
-    }, 500);
+    }, 300);
   });
 
   player.onCollide("wardrobe", () => {
     wardrobeMenu.hidden = false;
+    wardrobeMenu.pos = k.vec2(player.pos.x, player.pos.y + 50);
   });
 
   setCamScale(k);
