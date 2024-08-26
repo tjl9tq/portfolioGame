@@ -1,4 +1,6 @@
 import { scaleFactor } from "./constants";
+import { generatePlayer } from "./entities/player";
+import { generateSlimeComponents, setSlimeAI } from "./entities/slime";
 import k from "./kaplayContext";
 import {
   drawCollisions,
@@ -25,31 +27,13 @@ k.scene("main", async () => {
 
   const map = k.add([k.sprite("map"), k.pos(0), k.scale(scaleFactor)]);
 
-  const player = k.make([
-    k.sprite("spritesheet", { anim: "idle-down" }),
-    k.area({
-      shape: new k.Rect(k.vec2(0, 3), 10, 10),
-    }),
-    k.body(),
-    k.anchor("center"),
-    k.pos(),
-    k.scale(scaleFactor),
-    {
-      speed: 300,
-      direction: "down",
-      isInDialogue: false,
-      attacking: false,
-      cooldown: false,
-      health: 8,
-    },
-    "player",
-  ]);
+  const player = k.make(generatePlayer());
 
   const wardrobeMenu = k.make([
     k.rect(240, 380),
     k.outline(2),
     k.Color.WHITE,
-    k.pos(k.center()),
+    k.pos(k.center().x, k.center().y),
     k.anchor("center"),
   ]);
 
@@ -113,6 +97,13 @@ k.scene("main", async () => {
             (map.pos.y + entity.y) * scaleFactor,
           );
           k.add(player);
+        }
+        if (entity.name === "slime") {
+          const slime = k.make(
+            generateSlimeComponents(k, k.vec2(entity.x, entity.y)),
+          );
+          map.add(slime);
+          setSlimeAI(k, slime);
         }
       }
     }

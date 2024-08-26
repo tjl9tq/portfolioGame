@@ -76,7 +76,7 @@ export const drawInteractions = (
 ) => {
   for (const interaction of layer.objects) {
     // TODO: Remove when wardrobe is implemented
-    if (interaction.name === "wardrobe") continue;
+    // if (interaction.name === "wardrobe") continue;
     if (interaction.name) {
       const xPos = interaction.x * scaleFactor;
       const yPos = interaction.y * scaleFactor;
@@ -183,12 +183,18 @@ export const loadSpriteSheet = (spriteToUse: number) => {
       "attack-down": 1120,
       "attack-side": 1121,
       "attack-up": 1122,
-      // "slime-idle-down": 858,
-      // "slime-idle-side": 860,
-      // "slime-idle-up": 897,
-      // "slime-move-down": { from: 858, to: 859, loop: true, speed: 4 },
-      // "slime-move-side": { from: 860, to: 861, loop: true, speed: 4 },
-      // "slime-move-up": { from: 897, to: 898, loop: true, speed: 4 },
+      "slime-idle-down": 858,
+      "slime-idle-side": 860,
+      "slime-idle-up": 897,
+      "slime-down": { from: 858, to: 859, loop: true, speed: 4 },
+      "slime-side": { from: 860, to: 861, loop: true, speed: 4 },
+      "slime-up": { from: 897, to: 898, loop: true, speed: 4 },
     },
   });
 };
+
+export function playAnimIfNotPlaying(gameObj, animName) {
+  if (gameObj.curAnim() !== animName) {
+    gameObj.play(animName);
+  }
+}
