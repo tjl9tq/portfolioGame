@@ -103,7 +103,12 @@ k.scene("main", async () => {
             generateSlimeComponents(k, k.vec2(entity.x, entity.y)),
           );
           map.add(slime);
-          setSlimeAI(k, slime);
+          // setSlimeAI(k, slime);
+          slime.onCollide("playerAttack", (obj, col) => {
+            console.log("obj", obj);
+            console.log("col", col);
+            console.log("");
+          });
         }
       }
     }
@@ -111,7 +116,6 @@ k.scene("main", async () => {
       drawInteractions(map, layer, player);
     }
   }
-
   k.add(wardrobeMenu);
 
   wardrobeMenu.hidden = true;
@@ -273,36 +277,36 @@ k.scene("main", async () => {
         switch (player.direction) {
           case "left":
             return {
-              x: player.pos.x - player.width * 0.5 * scaleFactor,
-              y: player.pos.y,
+              x: -player.width * 0.5,
+              y: 0,
             };
           case "right":
             return {
-              x: player.pos.x + player.width * 0.5 * scaleFactor,
-              y: player.pos.y,
+              x: player.width * 0.5,
+              y: 0,
             };
           case "up":
             return {
-              x: player.pos.x,
-              y: player.pos.y - player.width * 0.5 * scaleFactor,
+              x: 0,
+              y: -player.width * 0.5,
             };
           case "down":
             return {
-              x: player.pos.x,
-              y: player.pos.y + player.width * 0.5 * scaleFactor,
+              x: 0,
+              y: +player.width * 0.5,
             };
           default:
             return {
-              x: player.pos.x - player.width * 0.5 * scaleFactor,
-              y: player.pos.y,
+              x: -player.width * 0.5,
+              y: 0,
             };
         }
       };
       const getHitboxShape = () => {
         if (player.direction === "up" || player.direction === "down")
-          return new k.Rect(k.vec2(0), player.width * 3, player.height * 2);
+          return new k.Rect(k.vec2(0), player.width * 0.5, player.height * 0.5);
         if (player.direction === "left" || player.direction === "right")
-          return new k.Rect(k.vec2(0), player.width * 2, player.height * 3);
+          return new k.Rect(k.vec2(0), player.width * 0.5, player.height * 0.5);
       };
 
       const hitboxPos = getHitboxPosition();
@@ -315,7 +319,8 @@ k.scene("main", async () => {
         k.anchor("center"),
         "playerAttack",
       ]);
-      k.add(hitbox);
+      player.add(hitbox);
+
       setTimeout(() => {
         k.destroy(hitbox);
         player.attacking = false;

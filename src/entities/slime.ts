@@ -1,8 +1,8 @@
-import { GameObj, KAPLAYCtx } from "kaplay";
+import { GameObj, KAPLAYCtx, Vec2 } from "kaplay";
 import { playAnimIfNotPlaying } from "../utils.js";
 
 const directionalStates = ["left", "right", "up", "down"];
-export function generateSlimeComponents(k: KAPLAYCtx, pos) {
+export function generateSlimeComponents(k: KAPLAYCtx, pos: Vec2) {
   return [
     k.sprite("spritesheet", { frame: 858 }),
     k.area({
