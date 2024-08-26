@@ -33,7 +33,7 @@ k.scene("main", async () => {
     k.rect(240, 380),
     k.outline(2),
     k.Color.WHITE,
-    k.pos(k.center().x, k.center().y),
+    k.pos(),
     k.anchor("center"),
   ]);
 
